@@ -1232,9 +1232,8 @@ dependencies = [
 
 [[package]]
 name = "telegram-bot"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb29fb11ef40c839c1c6b4e9c2ec4f357f9f674491e9df5a8c94f8cc2005f860"
+version = "0.8.0"
+source = "git+https://github.com/ayrat555/telegram-bot?branch=ayrat555/api-fixes-10#64c9a2e66285cf060c801ede5f3f8bd54db3c32a"
 dependencies = [
  "bytes 0.5.6",
  "futures",
@@ -1249,9 +1248,8 @@ dependencies = [
 
 [[package]]
 name = "telegram-bot-raw"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "add65834bee405351f092b18a4647cae05d1c40699570054eadc6d4035d9692c"
+version = "0.8.0"
+source = "git+https://github.com/ayrat555/telegram-bot?branch=ayrat555/api-fixes-10#64c9a2e66285cf060c801ede5f3f8bd54db3c32a"
 dependencies = [
  "bytes 0.5.6",
  "serde",
