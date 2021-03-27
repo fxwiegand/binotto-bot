@@ -111,7 +111,7 @@ async fn main() -> Result<()> {
     let mut file = std::fs::File::open("chats.txt")?;
     let mut content = String::new();
     file.read_to_string(&mut content)?;
-    let chat_ids: HashSet<_> = content.lines().map(|s| s.to_owned()).collect();
+    let mut chat_ids: HashSet<_> = content.lines().map(|s| s.to_owned()).collect();
 
     loop {
         if let Some(update) = stream.next().await {
@@ -123,6 +123,7 @@ async fn main() -> Result<()> {
 
                     // Save new chats...
                     if !chat_ids.contains(&message.chat.id().to_string()) {
+                        chat_ids.insert(message.chat.id().to_string());
                         let mut file = OpenOptions::new()
                             .write(true)
                             .append(true)
