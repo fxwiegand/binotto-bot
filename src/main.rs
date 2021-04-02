@@ -1,5 +1,7 @@
 use anyhow::Result;
 use chrono::{DateTime, FixedOffset, Utc};
+use rand::distributions::{Distribution, Uniform};
+use rand::Rng;
 use serde::*;
 use serde_aux::prelude::*;
 use serde_json::Value;
@@ -145,7 +147,33 @@ async fn main() -> Result<()> {
                         };
                         api.send(message.text_reply(reply)).await?;
                     } else if data.to_lowercase().contains("spinella") {
+                        api.send(
+                            message.text_reply("Wer hat sich denn jetzt schon wieder gedreht?"),
+                        )
+                        .await?;
                         // api.send(message.document_reply(InputFileRef::new("https://tenor.com/view/sbinalla-sebastian-vettel-gif-20114606"))).await?; TODO: Send spinning gif.
+                    } else if data.to_lowercase().contains("mazepin") {
+                        let replaced = data
+                            .replace("mazepin", "mazespin")
+                            .replace("Mazepin", "Mazespin");
+                        let answer = format!("Du meinst doch sicherlich '{}'!", replaced);
+                        api.send(message.text_reply(answer)).await?;
+                    } else {
+                        let mut rng = rand::thread_rng();
+                        let n1: u8 = rng.gen();
+                        if n1 == 77 {
+                            api.send(
+                                message.text_reply(
+                                    "Das ist alles Teil meines großen Plans für Ferrari!",
+                                ),
+                            )
+                            .await?;
+                        } else if n1 == 5 {
+                            let position = Uniform::from(1..18);
+                            let pos1 = position.sample(&mut rng).to_string();
+                            let pos2 = position.sample(&mut rng).to_string();
+                            api.send(message.text_reply(format!("Meine Vorhersage fürs nächste Rennen: Meine beiden Ferrari belegen beim nächsten Rennen Platz {} und {}. Da staunt ihr was?", pos1, pos2) )).await?;
+                        }
                     }
                 }
             }
