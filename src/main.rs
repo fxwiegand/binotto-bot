@@ -1,10 +1,12 @@
 use anyhow::Result;
 use chrono::{DateTime, FixedOffset, Utc};
+use log::{info, LevelFilter};
 use rand::distributions::{Distribution, Uniform};
 use rand::Rng;
 use serde::*;
 use serde_aux::prelude::*;
 use serde_json::Value;
+use simple_logger::SimpleLogger;
 use std::collections::HashSet;
 use std::fs::OpenOptions;
 use std::io::{Read, Write};
@@ -16,7 +18,14 @@ use tokio::stream::StreamExt;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    SimpleLogger::new()
+        .with_level(LevelFilter::Off)
+        .with_module_level("binotto_bot", LevelFilter::Info)
+        .init()
+        .unwrap();
+
     tokio::spawn(async move {
+        info!("Spawned new thread");
         let mut response = reqwest::get("http://ergast.com/api/f1/2021.json")
             .await
             .unwrap()
@@ -39,6 +48,8 @@ async fn main() -> Result<()> {
             })
             .collect();
 
+        info!("Fetched race data");
+
         let token = env::var("TELEGRAM_BOT_TOKEN").expect("TELEGRAM_BOT_TOKEN not set");
         let api = Api::new(token);
 
@@ -47,6 +58,7 @@ async fn main() -> Result<()> {
             let mut content = String::new();
             file.read_to_string(&mut content).unwrap();
             let chat_ids: HashSet<_> = content.lines().map(|s| i64::from_str(s).unwrap()).collect();
+            info!("Read chat ids for race reminders");
 
             if let Some((race, time_to_race)) = get_next_race(&races.clone()) {
                 match time_to_race {
@@ -80,6 +92,7 @@ async fn main() -> Result<()> {
                     _ => {}
                 }
             }
+            info!("Going to sleep");
             thread::sleep(Duration::from_secs(3500));
         }
     });
@@ -115,9 +128,12 @@ async fn main() -> Result<()> {
     file.read_to_string(&mut content)?;
     let mut chat_ids: HashSet<_> = content.lines().map(|s| s.to_owned()).collect();
 
+    info!("Fetched race data");
+
     loop {
         if let Some(update) = stream.next().await {
             // If the received update contains a new message...
+            info!("Receiving update: {:?}", &update);
             let update = update?;
             if let UpdateKind::Message(message) = update.kind {
                 if let MessageKind::Text { ref data, .. } = message.kind {
