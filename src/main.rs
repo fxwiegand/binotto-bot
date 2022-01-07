@@ -103,7 +103,7 @@ async fn main() -> Result<()> {
     // Fetch new updates via long poll method
     let mut stream = api.stream();
 
-    let mut response = reqwest::get("http://ergast.com/api/f1/2021.json")
+    let mut response = reqwest::get("http://ergast.com/api/f1/2022.json")
         .await?
         .json::<Value>()
         .await?;
