@@ -26,7 +26,7 @@ async fn main() -> Result<()> {
 
     tokio::spawn(async move {
         info!("Spawned new thread");
-        let mut response = reqwest::get("http://ergast.com/api/f1/2021.json")
+        let mut response = reqwest::get("http://ergast.com/api/f1/2022.json")
             .await
             .unwrap()
             .json::<Value>()
